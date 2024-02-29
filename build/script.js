@@ -12,9 +12,9 @@ const vision = document.getElementById("vision");
 const visionFrac = document.getElementById("frac");
 const condition = document.getElementById("condition");
 
-const circleX = 225;
-const circleY = 120;
-const circleRadius = 60;
+const circleX = canvas.width / 2;
+const circleY = canvas.height / 2;
+const circleRadius = canvas.height / 5;
 
 const draw = () => {
     context.clearRect(0, 0, canvas.clientWidth, canvas.height);
