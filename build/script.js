@@ -11,30 +11,122 @@ const cover = document.getElementById("cover");
 const vision = document.getElementById("vision");
 const visionFrac = document.getElementById("frac");
 const condition = document.getElementById("condition");
+const airportCode = document.getElementById("airport-code");
 
 const circleX = canvas.width / 2;
 const circleY = canvas.height / 2;
 const circleRadius = canvas.height / 5;
 
+// const conditionImgsPath = "../imgs/conditions";
+// const trendImgsPath = "../imgs/trends";
+
+
 const draw = () => {
     context.clearRect(0, 0, canvas.clientWidth, canvas.height);
 
-    drawText(temp.value, circleX - circleRadius * 1.5, circleY - circleRadius * 1.5);
-    drawText(dew.value, circleX - circleRadius * 1.5, circleY + circleRadius);
+    drawText(level(temp, 140, -80), circleX - circleRadius * 1.5, circleY - circleRadius * 1.5);
+    drawText(level(dew, 140, -80), circleX - circleRadius * 1.5, circleY + circleRadius);
     drawCurrent(current.value, circleX + circleRadius, circleY - circleRadius * 1.5);
-    // drawTrend(change.value, trend.value);
-    drawWind(speed.value, direction.value);
+    drawTrend(level(change, 9.9, -9.9), trend.value);
+    drawWind(level(speed, 250, 0), levelDirection(direction));
     circle(cover.value);
-    drawText(vision.value, circleX - circleRadius * 3, circleY - circleRadius / 2);
+    drawText(level(vision, 50, 0), circleX - circleRadius * 3, circleY - circleRadius / 2);
     drawText(visionFrac.value, circleX - circleRadius * 2.25, circleY - circleRadius / 2);
-    // drawCondition(condition.value);
+    drawCondition(condition.value);
+    drawText(airportCode.value.toUpperCase(), circleX + circleRadius * 1.25, circleY + circleRadius);
+}
 
+// const fetchImagePaths = async (folderPath) => {
+//     const response = await fetch(folderPath);
+//     const data = await response.text();
+//     const imagePaths = data.trim().split("\n");
+//     return imagePaths;
+// }
+
+// const fetchAllImagePaths = async () => {
+//     const conditionImgsPath = await fetchImagePaths(conditionImgsPath);
+//     const trendImgsPath = await fetchImagePaths(trendImgsPath);
+//     return { condition: conditionImgsPath, trend: trendImgsPath };
+// }
+
+// const loadImages = async () => {
+//     const imagePaths = await fetchAllImagePaths();
+//     const conditionImgs = await Promise.all(imagePaths.condition.map(path => loadImage(path)));
+//     const trendImages = await Promise.all(imagePaths.trend.map(path => loadImage(path)));
+//     return { condition: conditionImgs, trend: trendImages };
+// }
+
+const level = (val, max, min) => {
+    let newValue = val.value;
+    if (val.value > max) {
+        newValue = max;
+    } else if (val.value < min) {
+        newValue = min;
+    }
+    if (newValue !== val.value) {
+        val.value = newValue;
+    }
+    return newValue;
+}
+
+const levelDirection = (direction) => {
+    let newDir = direction.value;
+    if (direction.value > 360) {
+        newDir = direction.value % 360;
+    } else if (direction.value < 0) {
+        newDir = (direction.value % 360) + 360;
+    }
+    if (newDir !== direction.value) {
+        direction.value = newDir;
+    }
+    return newDir;
+}
+
+
+
+
+const drawTrend = (changeVal, trendVal) => {
+    const imagePath = `../imgs/trends/${trendVal}.png`;
+    loadImage(imagePath)
+        .then(img => {
+            context.drawImage(img, circleX + circleRadius * 2.3, circleY);
+        })
+        .catch(e => {
+            console.error("Error loading trend image: ", e);
+        });
+    if (changeVal > 0) {
+        drawText(`+${changeVal}`, circleX + circleRadius + circleRadius / 5, circleY);
+    } else {
+        drawText(changeVal, circleX + circleRadius + circleRadius / 5, circleY);
+    }
     
+}
+
+const drawCondition = (conditionVal) => {
+    const imagePath = `../imgs/conditions/${conditionVal}.png`;
+    loadImage(imagePath)
+        .then(img => {
+            context.drawImage(img, circleX - circleRadius * 1.8, circleY);
+        })
+        .catch(e => {
+            console.error("Error loading condition image: ", e);
+        });
+}
+
+const loadImage = (src) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = (e) => reject(e);
+        img.src = src;
+    });
 }
 
 const drawWind = (speedVal, directionVal) => {
     const radians = (directionVal - 90) * Math.PI / 180;
     const flagLength = 100;
+    const triangleSize = 15;
+    const lineLength = 30;
 
     const flagStartX = circleX + Math.cos(radians) * circleRadius;
     const flagStartY = circleY + Math.sin(radians) * circleRadius;
@@ -44,24 +136,77 @@ const drawWind = (speedVal, directionVal) => {
 
     context.beginPath();
     context.moveTo(flagStartX, flagStartY);
-    context.lineTo(flagEndX, flagEndY);
+
+    if (speedVal <= 2) {
+        context.arc(circleX, circleY, circleRadius * 1.2, 0, 2 * Math.PI);
+    } else {
+        context.lineTo(flagEndX, flagEndY);
+
+        // 48 ~ 50 ~ 52
+        // 8 ~ 10 ~ 12
+        // 3 ~ 5 ~ 7
+        // while (speedVal > 0) {
+        //     if (speedVal >= 48) {
+        //         drawTriangle(flagEndX, flagEndY, triangleSize)
+        //         flagEndX += Math.cos(radians) * (triangleSize + 5);
+        //         flagEndY += Math.sin(radians) * (triangleSize + 5);
+        //         speedVal -= 50;
+        //     } else if (speedVal >= 8) {
+        //         const lineEndX = flagEndX + Math.cos(radians + Math.PI / 2) * lineLength;
+        //         const lineEndY = flagEndY + Math.sin(radians + Math.PI / 2) * lineLength;
+        //         drawLine(flagEndX, flagEndY, lineEndX, lineEndY);
+
+        //         flagEndX += Math.cos(radians) * (lineLength + 5);
+        //         flagEndY += Math.sin(radians) * (lineLength + 5);
+        //         speedVal -= 10;
+        //     } else if (speedVal >= 3) {
+        //         const lineEndX = flagEndX + Math.cos(radians + Math.PI / 2) * lineLength / 2;
+        //         const lineEndY = flagEndY + Math.sin(radians + Math.PI / 2) * lineLength / 2;
+        //         drawLine(flagEndX, flagEndY, lineEndX, lineEndY);
+
+        //         flagEndX += Math.cos(radians) * (lineLength / 2 + 5);
+        //         flagEndY += Math.sin(radians) * (lineLength / 2 + 5);
+        //         speedVal -= 5;
+        //     }
+        // }
+    }
+    
     context.strokeStyle = "black";
     context.lineWidth = 3;
     context.stroke();
+
+    
 }
 
+const drawTriangle = (x, y, size) => {
+    const point1 = { x: x, y: y };
+    const point2 = { x: x + size / 2, y: y + size * 2 };
+    const point3 = { x: x + size, y: y };
 
-const drawText = (val, x, y) => {
+    context.beginPath();
+    context.moveTo(point1.x, point1.y);
+    context.lineTo(point2.x, point2.y);
+    context.lineTo(point3.x, point3.y);
+    context.closePath();
+    context.stroke();
+}
+
+const drawText = (val, x, y, color = "black") => {
     context.font = "32px Arial";
-    context.fillStyle = "black";
+    context.fillStyle = color;
     context.textAlign = "left";
     context.textBaseline = "top";
     context.fillText(val, x, y)
 }
 
 const drawCurrent = (curVal, x, y) => {
-
-    curVal = curVal.toString().slice(2).replace(".", "");
+    curVal = curVal.toString().replace(".", "");
+    if (curVal >= 10000) {
+        curVal = curVal.slice(2);
+    } else {
+        curVal = curVal.slice(1);
+    }
+    
     drawText(curVal, x, y);
 }
 
@@ -194,17 +339,17 @@ const drawX = () => {
     context.stroke();
 }
 
-temp.addEventListener("input", draw)
-dew.addEventListener("input", draw)
-speed.addEventListener("input", draw)
-direction.addEventListener("input", draw)
-current.addEventListener("input", draw)
-change.addEventListener("input", draw)
-trend.addEventListener("input", draw)
-cover.addEventListener("input", draw)
-vision.addEventListener("input", draw)
-visionFrac.addEventListener("input", draw)
-condition.addEventListener("input", draw)
+temp.addEventListener("input", draw);
+dew.addEventListener("input", draw);
+speed.addEventListener("input", draw);
+direction.addEventListener("input", draw);
+current.addEventListener("input", draw);
+change.addEventListener("input", draw);
+trend.addEventListener("input", draw);
+cover.addEventListener("input", draw);
+vision.addEventListener("input", draw);
+visionFrac.addEventListener("input", draw);
+condition.addEventListener("input", draw);
+airportCode.addEventListener("input", draw);
 
-
-draw()
+draw();
