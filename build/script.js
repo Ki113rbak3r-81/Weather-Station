@@ -125,13 +125,16 @@ const loadImage = (src) => {
 const drawWind = (speedVal, directionVal) => {
     const radians = (directionVal - 90) * Math.PI / 180;
     const flagLength = 100;
-    const triangleSize = 15;
+    const triangleSize = 16;
     const lineLength = 30;
 
     const flagStartX = circleX + Math.cos(radians) * circleRadius;
     const flagStartY = circleY + Math.sin(radians) * circleRadius;
     const flagEndX = flagStartX + Math.cos(radians) * flagLength;
     const flagEndY = flagStartY + Math.sin(radians) * flagLength;
+
+
+    // drawTriangle(flagEndX, flagEndY, radians, triangleSize);
 
 
     context.beginPath();
@@ -145,32 +148,20 @@ const drawWind = (speedVal, directionVal) => {
         // 48 ~ 50 ~ 52
         // 8 ~ 10 ~ 12
         // 3 ~ 5 ~ 7
-        // while (speedVal > 0) {
+        // while (speedVal >= 3) {
         //     if (speedVal >= 48) {
-        //         drawTriangle(flagEndX, flagEndY, triangleSize)
-        //         flagEndX += Math.cos(radians) * (triangleSize + 5);
-        //         flagEndY += Math.sin(radians) * (triangleSize + 5);
+        //         drawTriangle(-flagEndY, flagEndX, radians, triangleSize);
         //         speedVal -= 50;
         //     } else if (speedVal >= 8) {
-        //         const lineEndX = flagEndX + Math.cos(radians + Math.PI / 2) * lineLength;
-        //         const lineEndY = flagEndY + Math.sin(radians + Math.PI / 2) * lineLength;
-        //         drawLine(flagEndX, flagEndY, lineEndX, lineEndY);
-
-        //         flagEndX += Math.cos(radians) * (lineLength + 5);
-        //         flagEndY += Math.sin(radians) * (lineLength + 5);
+        //         drawLine(flagEndX, flagEndY, flagEndX - Math.sin(radians), flagEndY + Math.cos(radians));
         //         speedVal -= 10;
         //     } else if (speedVal >= 3) {
-        //         const lineEndX = flagEndX + Math.cos(radians + Math.PI / 2) * lineLength / 2;
-        //         const lineEndY = flagEndY + Math.sin(radians + Math.PI / 2) * lineLength / 2;
-        //         drawLine(flagEndX, flagEndY, lineEndX, lineEndY);
-
-        //         flagEndX += Math.cos(radians) * (lineLength / 2 + 5);
-        //         flagEndY += Math.sin(radians) * (lineLength / 2 + 5);
+        //         drawLine(flagEndX, flagEndY, flagEndX - Math.sin(radians), flagEndY + Math.cos(radians));
         //         speedVal -= 5;
         //     }
         // }
     }
-    
+    context.closePath();
     context.strokeStyle = "black";
     context.lineWidth = 3;
     context.stroke();
@@ -178,16 +169,24 @@ const drawWind = (speedVal, directionVal) => {
     
 }
 
-const drawTriangle = (x, y, size) => {
-    const point1 = { x: x, y: y };
-    const point2 = { x: x + size / 2, y: y + size * 2 };
-    const point3 = { x: x + size, y: y };
+const drawTrianglePerp = (x, y, angle, size) => {
+    const x1 = x + size * Math.cos(angle);
+    const y1 = y + size * Math.sin(angle);
+    
+    const x2 = x1 + size * Math.cos(angle - Math.PI / 2);
+    const y2 = y1 + size * Math.sin(angle - Math.PI / 2);
+    
+    const x3 = x1 + size * Math.cos(angle + Math.PI / 2);
+    const y3 = y1 + size * Math.sin(angle + Math.PI / 2);
 
     context.beginPath();
-    context.moveTo(point1.x, point1.y);
-    context.lineTo(point2.x, point2.y);
-    context.lineTo(point3.x, point3.y);
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.lineTo(x3, y3);
     context.closePath();
+    context.fillStyle = "black";
+    context.fill();
+    context.strokeStyle = "black";
     context.stroke();
 }
 
@@ -311,10 +310,10 @@ const drawCircle = (x, y, r, s, e, c) => {
     context.fill();
 }
 
-const drawLine = (x, y, newx, newy, white = false) => {
+const drawLine = (x1, y1, x2, y2, white = false) => {
     context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(newx, newy);
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
     if (!white) {
         context.strokeStyle = "black";
     } else {
