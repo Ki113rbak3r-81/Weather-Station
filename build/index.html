@@ -1,198 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-200 p-8">
+</head>
+<body class="bg-gray-200 p-8">
     <div class="max-w-md mx-auto bg-white p-8 rounded shadow-md">
-      <h2 class="text-xl font-semibold mb-4">Weather Station Model</h2>
-      <canvas id="canvas" width="400" height="300"></canvas>
-      <div id="form_container">
-        <form id="weather-form" , class="space-y-4">
-          <div class="flex flex-col">
-            <label for="temperature" class="mb-1">Temperature:</label>
-            <input
-              type="number"
-              id="temperature"
-              name="temperature"
-              class="border border-gray-300 rounded px-3 py-2"
-              value="72"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label for="dew-point" class="mb-1">Dew Point:</label>
-            <input
-              type="number"
-              id="dew-point"
-              name="dew-point"
-              class="border border-gray-300 rounded px-3 py-2"
-              value="63"
-            />
-          </div>
-          <div class="flex flex-col">
-            <p>Wind:</p>
-            <div class="flex flex-col">
-              <label for="speed" class="mb-1">Speed:</label>
-              <input
-                type="number"
-                id="speed"
-                name="speed"
-                class="border border-gray-300 rounded px-3 py-2"
-                value="65"
-              />
-            </div>
-            <div class="flex flex-col">
-              <label for="direction" class="mb-1">Direction:</label>
-              <input
-                type="number"
-                id="direction"
-                name="direction"
-                class="border border-gray-300 rounded px-3 py-2"
-                value="180"
-                maxlength="3"
-              />
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <p>SLP:</p>
-            <div class="flex flex-col">
-              <label for="current" class="mb-1">Current mb:</label>
-              <input
-                type="number"
-                id="current"
-                name="current"
-                class="border border-gray-300 rounded px-3 py-2"
-                value="1004.6"
-              />
-            </div>
-            <div class="flex flex-col">
-              <label for="change" class="mb-1">3-hour change mb:</label>
-              <input
-                type="number"
-                id="change"
-                name="change"
-                class="border border-gray-300 rounded px-3 py-2"
-                value="2.3"
-              />
-            </div>
-            <div class="flex flex-col">
-              <label for="trend" class="mb-1">Trend:</label>
-              <select
-                name="trend"
-                id="trend"
-                class="border border-gray-300 rounded px-3 py-2"
-                value="Rising"
-              >
-                <option value="rising" selected>Rising</option>
-                <option value="rising-steady">Rising then steady</option>
-                <option value="steady-rising">Steady then rising</option>
-                <option value="falling">Falling</option>
-                <option value="falling-steady">Falling then steady</option>
-                <option value="steady-falling">Steady then falling</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <label for="cover" class="mb-1">Sky-Cover:</label>
-            <select
-              name="cover"
-              id="cover"
-              class="border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="clear">Clear</option>
-              <option value="cloud-1/8">FEW (1/8)</option>
-              <option value="2/8">FEW (2/8)</option>
-              <option value="3/8">SCT (3/8)</option>
-              <option value="4/8">SCT (4/8)</option>
-              <option value="5/8">BKN (5/8)</option>
-              <option value="6/8" selected>BKN (6/8)</option>
-              <option value="7/8">BINOVC (7/8)</option>
-              <option value="overcast">Overcast</option>
-              <option value="obscured">Sky Obscured</option>
-              <option value="missing">Missing</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
-            <label for="vision" class="mb-1">Visibility:</label>
-            <input
-              type="text"
-              id="vision"
-              name="vision"
-              class="border border-gray-300 rounded px-3 py-2"
-            />
-            <label for="frac" class="mb-1">Fraction:</label>
-            <select
-              name="frac"
-              id="frac"
-              class="border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="0">0</option>
-              <option value="1/2" selected>1/2</option>
-              <option value="1/4">1/4</option>
-              <option value="1/8">1/8</option>
-              <option value="1/16">1/16</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
-            <label for="condition" class="mb-1"
-              >Obstruction to Visibility (Weather)</label
-            >
-            <select
-              name="condition"
-              id="condition"
-              class="border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="none">None</option>
-              <option value="light-rain">Light Rain</option>
-              <option value="moderate-rain">Moderate Rain</option>
-              <option value="heavy-rain" selected>Heavy Rain</option>
-              <option value="rain-showers">Rain Showers</option>
-              <option value="light-thunderstorm">Light Thunderstorm</option>
-              <option value="moderate-thunderstorm">
-                Moderate Thunderstorm
-              </option>
-              <option value="heavy-thunderstorm">Heavy Thunderstorm</option>
-              <option value="light-drizzle">Light Drizzle</option>
-              <option value="moderate-drizzle">Moderate Drizzle</option>
-              <option value="heavy-drizzle">Heavy Drizzle</option>
-              <option value="light-snow">Light Snow</option>
-              <option value="moderate-snow">Moderate Snow</option>
-              <option value="heavy-snow">Heavy Snow</option>
-              <option value="snow-showers">Snow Showers</option>
-              <option value="sleet">Sleet</option>
-              <option value="freezing-rain">Freezing Rain</option>
-              <option value="freezing-drizzle">Freezing Drizzle</option>
-              <option value="blowing-snow">Blowing Snow</option>
-              <option value="blowing-dust">Blowing Dust</option>
-              <option value="smoke">Smoke</option>
-              <option value="haze">Haze</option>
-              <option value="light-fog">Light Fog</option>
-              <option value="moderate-fog">Moderate Fog</option>
-              <option value="heavy-fog">Heavy Fog</option>
-              <option value="hurricane">Hurricane</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
-            <label for="airport-code" class="mb-1">Airport Code:</label>
-            <input
-              type="text"
-              id="airport-code"
-              name="airport-code"
-              class="border border-gray-300 rounded px-3 py-2"
-              maxlength="4"
-            />
-          </div>
-        </form>
-      </div>
+        <h2 class="text-xl font-semibold mb-4">Weather Station Model</h2>
+        <canvas id="canvas" width="400" height="300"></canvas>
+        <div id="form_container">
+            <form id="weather-form", class="space-y-4">
+                <div class="flex flex-col">
+                    <label for="temperature" class="mb-1">Temperature:</label>
+                    <input type="number" id="temperature" name="temperature" class="border border-gray-300 rounded px-3 py-2" value="72">
+                </div>
+                <div class="flex flex-col">
+                    <label for="dew-point" class="mb-1">Dew Point:</label>
+                    <input type="number" id="dew-point" name="dew-point" class="border border-gray-300 rounded px-3 py-2" value="63">
+                </div>
+                <div class="flex flex-col">
+                    <p>Wind:</p>
+                    <div class="flex flex-col">
+                        <label for="speed" class="mb-1">Speed:</label>
+                        <input type="number" id="speed" name="speed" class="border border-gray-300 rounded px-3 py-2" value="65">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="direction" class="mb-1">Direction:</label>
+                        <input type="number" id="direction" name="direction" class="border border-gray-300 rounded px-3 py-2" value="180" maxlength="3">
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <p>SLP:</p>
+                    <div class="flex flex-col">
+                        <label for="current" class="mb-1">Current mb:</label>
+                        <input type="number" id="current" name="current" class="border border-gray-300 rounded px-3 py-2" value="1004.6">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="change" class="mb-1">3-hour change mb:</label>
+                        <input type="number" id="change" name="change" class="border border-gray-300 rounded px-3 py-2" value="2.3">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="trend" class="mb-1">Trend:</label>
+                        <select name="trend" id="trend" class="border border-gray-300 rounded px-3 py-2" value="Rising">
+                            <option value="rising" selected>Rising</option>
+                            <option value="rising-steady">Rising then steady</option>
+                            <option value="steady-rising">Steady then rising</option>
+                            <option value="falling">Falling</option>
+                            <option value="falling-steady">Falling then steady</option>
+                            <option value="steady-falling">Steady then falling</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <label for="cover" class="mb-1">Sky-Cover:</label>
+                    <select name="cover" id="cover" class="border border-gray-300 rounded px-3 py-2">
+                        <option value="clear">Clear</option>
+                        <option value="cloud-1/8">FEW (1/8)</option>
+                        <option value="2/8">FEW (2/8)</option>
+                        <option value="3/8">SCT (3/8)</option>
+                        <option value="4/8">SCT (4/8)</option>
+                        <option value="5/8">BKN (5/8)</option>
+                        <option value="6/8" selected>BKN (6/8)</option>
+                        <option value="7/8">BINOVC (7/8)</option>
+                        <option value="overcast">Overcast</option>
+                        <option value="obscured">Sky Obscured</option>
+                        <option value="missing">Missing</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="vision" class="mb-1">Visibility:</label>
+                    <input type="text" id="vision" name="vision" class="border border-gray-300 rounded px-3 py-2">
+                    <label for="frac" class="mb-1">Fraction:</label>
+                    <select name="frac" id="frac" class="border border-gray-300 rounded px-3 py-2">
+                        <option value="0">0</option>
+                        <option value="1/2" selected>1/2</option>
+                        <option value="1/4">1/4</option>
+                        <option value="1/8">1/8</option>
+                        <option value="1/16">1/16</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="condition" class="mb-1">Obstruction to Visibility (Weather)</label>
+                    <select name="condition" id="condition" class="border border-gray-300 rounded px-3 py-2">
+                        <option value="none">None</option>
+                        <option value="light-rain">Light Rain</option>
+                        <option value="moderate-rain">Moderate Rain</option>
+                        <option value="heavy-rain" selected>Heavy Rain</option>
+                        <option value="rain-showers">Rain Showers</option>
+                        <option value="light-thunderstorm">Light Thunderstorm</option>
+                        <option value="moderate-thunderstorm">Moderate Thunderstorm</option>
+                        <option value="heavy-thunderstorm">Heavy Thunderstorm </option>
+                        <option value="light-drizzle">Light Drizzle</option>
+                        <option value="moderate-drizzle">Moderate Drizzle</option>
+                        <option value="heavy-drizzle">Heavy Drizzle</option>
+                        <option value="light-snow">Light Snow</option>
+                        <option value="moderate-snow">Moderate Snow</option>
+                        <option value="heavy-snow">Heavy Snow</option>
+                        <option value="snow-showers">Snow Showers</option>
+                        <option value="sleet">Sleet</option>
+                        <option value="freezing-rain">Freezing Rain</option>
+                        <option value="freezing-drizzle">Freezing Drizzle</option>
+                        <option value="blowing-snow">Blowing Snow</option>
+                        <option value="blowing-dust">Blowing Dust</option>
+                        <option value="smoke">Smoke</option>
+                        <option value="haze">Haze</option>
+                        <option value="light-fog">Light Fog</option>
+                        <option value="moderate-fog">Moderate Fog</option>
+                        <option value="heavy-fog">Heavy Fog</option>
+                        <option value="hurricane">Hurricane</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="airport-code" class="mb-1">Airport Code:</label>
+                    <input type="text" id="airport-code" name="airport-code" class="border border-gray-300 rounded px-3 py-2" maxlength="4">
+                </div>
+            </form>
+        </div>
     </div>
-  </body>
+</body>
 </html>
